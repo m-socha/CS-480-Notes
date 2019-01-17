@@ -239,4 +239,67 @@
         Sensitivity is the same measure as recall. Specificity is a measure of how well a classifier avoids false positives, and is measured as:
         $$Specificity = \frac{TN}{TN + FP}$$
 
+  \section{Instance-Based Learning}
+
+    \subsection{Parametric vs Non-Parametric Methods for Supervised Learning}
+      Datasets can be represented as a set of points in a high-dimensional space; a data point with $n$ features $f_1, f_2, ... f_n$ can be represented
+      with the feature vector $(f_1, f_2, ..., f_n)$ in n-dimensional space. Parametric methods of supervised learning attempt to model the data using
+      these parameters, while non-parametric (also known as instance-based) methods do not.
+
+      \subsubsection{Approximation}
+        Parametric methods use parameters to create global approximations. Non-parametric methods instead create approximations based on local data.
+
+      \subsubsection{Efficiency}
+        Parametric methods do most of their computation beforehand, and the summarize their results in a set of parameters. Non-parametric methods tend to
+        have a shorter training time but a longer query answering time.
+
+    \subsection{K-Nearest Neighbors}
+      K-nearest neighbors (KNN) is a common non-parametric method. The idea is to predict the value of a new point based on the values of the $K$ most similar
+      (i.e. closest) points.
+
+      \subsubsection{Implementation}
+        A common implementation of KNN involves looping through all $N$ points in a training set and computing their distance to some point $x$. Then the $K$ nearest
+        points are selected. This process can be sped up by storing the data points in a data structure that helps facilitate distance-based search (e.g. a k-d tree).
+
+      \subsubsection{Distance Function}
+        ``Nearby'' means of minimal distance, which is commonly defined by Euclidean distance. Other distance functions $d(x, x')$ can be used, though must meet
+        the following conditions:
+        \begin{itemize}
+          \item $d(x, x') = d(x', x)$ (i.e. symmetric)
+          \item $d(x, x) = 0$ (i.e. definite)
+          \item $d(a, c) \leq d(a, b) + d(b, c)$ (i.e. triangle inequality holds)
+        \end{itemize}
+
+      \subsubsection{Decision Boundaries}
+        Decision boundaries define the borders of a single classification of input. These boundaries are formed of sections of straight lines that are equidistant
+        to two points of different classes. A highly jagged line is an indicator of overfitting, while a simple line is an indicator of underfitting.
+
+      \subsubsection{Selection of K}
+        The selection of the value of $K$ is a bias-variance tradeoff. Low values of $K$ have high variance but low bias, while high values of $K$ have low variance
+        but high bias. High-values of $K$ result in smoother decision boundaries, which can be a sign of underfitting, and vice versa.
+
+        Values of $K$ can be algorithmically selected using some of the techniques discussed in the section above (e.g. cross validation). In theory, as the number
+        of training examples approaches infinity, the error rate of a 1NN classifier is at worst twice that of the Bayes Optimal Classifier.
+
+      \subsubsection{Pre-Processing}
+        Some common forms of pre-processing for KNN include:
+        \begin{itemize}
+          \item Removing undesirable inputs. Common removal methods are:
+            \begin{itemize}
+              \item Editing methods, which involve eliminating noisy points of data.
+              \item Condensation methods, which involve selecting a subset of data that produces the same or very similar classifications.
+            \end{itemize}
+          \item Use custom weights for each feature (not all features may be equally relevant for the situation)
+        \end{itemize}
+
+      \subsubsection{Distance-Weighted Nearest Neighbor}
+        A common problem with KNN is that it can be sensitive to small changes in the training data. One way to mitigate with drawback is to compute a weight for
+        each neighbor based on its distance (e.g. through a Gaussian distribution), and this weight determines how much of an influence that point's value has.
+        This differs from standard KNN which weighs the values of the $K$ nearest neighbors equally and ignores all other values.
+
+      \subsubsection{High Dimensionality}
+        In uniformly distributed high-dimensional spaces, distances between points tend to be roughly equal, since there are so many features that changing a few
+        features results in only a small change in distance. However, KNN can still be applied in practice for high-dimensional spaces, since data in high-dimensional
+        spaces tends to be concentrated around certain hubs rather than uniformly distributed.
+
 \end{document}
