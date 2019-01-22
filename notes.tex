@@ -278,8 +278,8 @@
         The selection of the value of $K$ is a bias-variance tradeoff. Low values of $K$ have high variance but low bias, while high values of $K$ have low variance
         but high bias. High-values of $K$ result in smoother decision boundaries, which can be a sign of underfitting, and vice versa.
 
-        Values of $K$ can be algorithmically selected using some of the techniques discussed in the section above (e.g. cross validation). In theory, as the number
-        of training examples approaches infinity, the error rate of a 1NN classifier is at worst twice that of the Bayes Optimal Classifier.
+        $K$ can be selected experimentally by evaluating the performance for different values of $K$ through cross-validation or against a testing set. In theory, as
+        the number of training examples approaches infinity, the error rate of a 1NN classifier is at worst twice that of the Bayes Optimal Classifier.
 
       \subsubsection{Pre-Processing}
         Some common forms of pre-processing for KNN include:
