@@ -302,4 +302,76 @@
         features results in only a small change in distance. However, KNN can still be applied in practice for high-dimensional spaces, since data in high-dimensional
         spaces tends to be concentrated around certain hubs rather than uniformly distributed.
 
+  \section{Perceptron}
+
+    A perceptron is a binary classification algorithm that accepts a set of features associated with weights.
+
+    \subsection{Formulation}
+      Let $x = (x_1, x_2, ..., x_D)$ be a feature vector with $D$ features, let $w = (w_1, w_2, ..., w_D)$ be the corresponding weight vector, and let $b$ be some fixed
+      bias/threshold term. Activation $a$ is defined as:
+
+      $$a = w^Tx + b = \sum_{d=1}^Dw_dx_d + b$$
+
+      If $a \geq 0$, then the perceptron classifier predicts a positive classification, and otherwise it predicts a negative classification.
+
+    \subsection{Decision Boundary}
+
+      A perceptron decision boundary is where the sign of the activation changes from negative to non-negative. It can be expressed as $a = w^Tx + b = 0$, so $w^Tx = -b$.
+      Hence, the decision boundary is a hyperplane perpendicular to $w$. The bias term can shift the hyperplane, but does not change its alignment.
+
+      If the weight and bias terms are scaled together, then the decision boundary does not change. However, it is common to normalize the weight vector to have a magnitude
+      of 1.
+
+    \subsection{Learning Algorithm}
+      The perceptron learning algorithm starts with any (e.g random) $w$ and $b$ parameters, and iterates over each point training point as follows:
+      \begin{enumerate}
+        \item Compute the activation $a$ for the point.
+        \item Compute the classification $y$ based on the activation $a$ (i.e. 1 is $a \geq 0$, otherwise 0).
+        \item If the perceptron correctly classifies the point, continue.
+        \item Otherwise, update the weights as $w_d = w_d + yx_d$, and update the bias as $b = b + y$. This guarantees that this point is correctly classified for this
+          iteration.
+      \end{enumerate}
+
+      The perceptron algorithm is guaranteed to converge on parameters (i.e. weights and bias) that correctly classify a set of points if such parameters exist.
+
+      The algorithm is considered to be:
+      \begin{itemize}
+        \item \textbf{Online}, since data becomes available in sequential order instead of all at once.
+        \item \textbf{Error driven}, since it requires an incorrectly classified point to update its parameters.
+      \end{itemize}
+
+      \subsubsection{Hyper-parameters}
+        The only hyper-parameter of the perceptron algorithm is the maximum number of iterations of the above algorithm (i.e. the number of times each point is considered).
+        A high number of iterations can lead to overfitting, while a low number of iterations can lead to underfitting. Since the order in which training points are
+        encountered matters in the training algorithm, it is important to permute the order of examples between iterations.
+
+      \subsubsection{Extensions}
+        A potential problem with the perceptron algorithm described above is that later training points are weighted more than earlier ones. For instance, it is possible
+        that after selecting weights that correctly classify thousands of training points, a single mislabeled point updates the weights in a way that drastically changes
+        the decision boundary in order to correctly classify this new point, but in doing so, mislabels many training points that were previously correctly classified.
+
+        This problem can be mitigated by favoring weight vectors that ``survive'' a long time. This can be done by letting the activation $a$ use a weighted sum of
+        weight vectors, each of which in term is weighted by its survival time (i.e. voted perceptron algorithm). Alternatively, a single weight vector and bias term
+        can be tracked using the weighted average of their survival times (i.e. average perceptron algorithm).
+
+    \subsection{Convergence}
+      Data can only be classified by a perceptron if it is linearly separable. Otherwise, the perceptron algorithm will not converge, and the decision boundary will
+      oscillate.
+
+      The speed of convergence of the perceptron algorithm depends on its margin, which is the distance from the separating hyperplane to the nearest data point. Large
+      margins result in faster convergence, since there is more ``wiggle room'' to adjust the parameters defining the hyperplane.
+
+      \subsubsection{Rosenblatt's Perceptron Convergence Theorem}
+        Let the margin $\gamma$ of a linearly separable dataset $D$ be the largest attainable margin on that dataset. Rosenblatt's perceptron convergence theorem states
+        that if $||x|| < 1$ for all $x \in D$, then the perceptron algorithm will converge after at most $\frac{1}{\gamma^2}$ updates. This is an upper bound; the number
+        of updates also depends on the dataset and the initial parameters.
+
+    \subsection{Limitations}
+      Two key limitations of perceptron classifiers are:
+      \begin{itemize}
+        \item The generated solutions (i.e. separating hyperplanes) may not be unique.
+        \item Non linearly-separable data cannot be modeled. In some cases, this limitation can be overcome by transforming feature vectors so
+          they become linearly separable, or by combining multiple perceptrons, which create a network that might be able to learn non-linear boundaries.
+      \end{itemize}
+
 \end{document}
