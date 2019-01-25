@@ -374,4 +374,99 @@
           they become linearly separable, or by combining multiple perceptrons, which create a network that might be able to learn non-linear boundaries.
       \end{itemize}
 
+  \section{Linear Models}
+
+    \subsection{Formulation}
+      A loss function concerning the distance $d$ between the value of points $x$ predicted by some model $w, b$ and their actual values $y$ can be minimized as follows:
+
+      $$min_{w,b} \sum_n d(y_n, w^Tx_n + b) + \lambda R(w, b)$$
+
+      The first term measures the training error, while the second term is known as a regularizer, and exists to prevent overfitting. $\lambda$ is a constant hyper-parameter
+      while $R$ is a function that imposes some penalty based on the complexity of parameters $w, b$.
+
+    \subsection{Training Parameters}
+
+      \subsubsection{Gradient Descent Solution}
+      The gradient of error can be used to determine the direction of steepest decline in error, and the training algorithm then adjusts parameters to move in that direction.
+      The training algorithm maintains the state of some parameter $z$, finds its gradient $g$, and updates $z$ to be $z + \eta g$, where $\eta$ is the learning rate (i.e. the
+      size of each step).
+
+      As an example, consider a loss function:
+
+      $$L(w,b) = \sum_n exp(-y_n(w^Tx_n + b)) + \frac{\lambda}{2}||w||^2$$
+
+      The partial derivative of $L$ over $b$ is $-\sum_n y_n \exp(-y_n(w^Tx_n + b))$, so $b$ is adjusted in each step to $b - \eta \sum_n y_n \exp(-y_n(w^Tx_n + b))$.
+
+      The partial derivative of $L$ over $w$ is $(-\sum_n y_n x_n \exp(-y_n(w^Tx_n + b))) + \lambda w$, so $w$ is adjusted in each step to
+      $w - \eta ((-\sum_n y_n x_n \exp(-y_n(w^Tx_n + b))) + \lambda w)$.
+
+      The learning rate $\eta$ impacts the size of each step. A high learning rate can result in oscillations around local minima, while a low learning rate results in training
+      being slow. It is common to lower the learning rate during later steps. When parameters start to not change by much, then a local minimum has likely been approached, and
+      the algorithm can stop.
+
+      Note that gradient descent does not guarantee convergence to a global minima; it can get stuck in a local minima that may not be optimal. However, approximations using
+      linear functions have a single global minimum.
+
+      \subsubsection{Closed Form Solution}
+        The gradient descent solution iteratively approaches some minimum. On the other hand, a closed form solution provides a formula for the absolute minimum. A closed form
+        solution is not always attainable, but this section focuses on an attainable case, which is where the loss function is measured by Euclidean distance.
+
+        Our model can start as linear; we assume that the target function can be modeled as $f_w(x) = w_0 + w_1x_1 + w_2x_2 + ... + w_Dx_D$. A linear model is often a poor
+        approximation, so further input variables can be added based on $x_1, ..., x_D$, such as:
+        \begin{itemize}
+          \item Transformations of variables, such as $\log{x_i}$
+          \item Interaction terms, such as $x_i \cdot x_{i+1}$
+          \item Numeric encoding of qualitative variables
+        \end{itemize}
+
+        The goal of the closed-form solution is to minimize $\sum_{i=1}^n (y_i - w^Tx_i)^2$ (i.e. minimize Euclidean distance of errors). It is convenient to rewrite the
+        problem in matrix format where:
+        \begin{itemize}
+          \item $X$ is a $NxD$ training data matrix, where $X_{n,d}$ is the value of feature $d$ on example $n$.
+          \item $w$ is a size $D$ column vector storing weights.
+          \item $\hat{Y} = Xw$ are the predicted values.
+        \end{itemize}
+
+        Since we aim to minimize squared error, we aim to minimize $|| \hat{Y} - Y ||^2 + \lambda||w||^2$. Taking the derivative of this against $w$ and setting it to 0
+        results in $w = (X^TX + \lambda I_D)^{-1}X^TY$. This equation takes $\theta(D^3 + D^2N + DN)$ steps to compute, so this method can be computationally expensive
+        for very high-dimensional problems.
+
+    \subsection{Regularization}
+      The Gauss-Markov theorem states that in a linear regression model, such as the one described above, the least-squares estimate (i.e. Euclidean distance) results in
+      a model with the least bias. We nonetheless add a regularization term, which increases bias, to avoid overfitting. A few desirable features of a regularization function
+      are:
+      \begin{itemize}
+        \item It is convex
+        \item Small (even 0) weight vector components are preferred (note that this is a form of inductive bias).
+      \end{itemize}
+
+      \subsubsection{P-norm}
+        The p-norm of the weight vector can be used as a regularization function, defined as follows:
+
+        $$R(w) = (\sum_d |w_d|^p)^\frac{1}{p}$$
+
+        The p-2 norm is the same as the Euclidean norm used above.
+
+      \subsubsection{Ridge Regression}
+        Ridge regression uses the following regularization function:
+
+        $$R(w) = \sum_d w_d^2 $$
+
+        Ridge regression tends to give a smooth solution with low weights.
+
+      \subsubsection{Lasso Regression}
+        Lasso regression uses the following regularization function:
+
+        $$R(w) = \sum_d |w_d| $$
+
+        Lasso regression leads to a less smooth and more computationally expensive solution than ridge regression. It is equivalent to a p-1 norm.
+
+    \subsection{Application to Classification Problems}
+      The perceptron algorithm covered above can find a hyperplane that splits a linearly separable dataset. However, the perceptron algorithm does not converge for datasets
+      that are not linearly separable.
+
+      Due to this limitation, it can make sense to relax the problem to finding a hyperplane that splits data with the fewest possible classification errors. However, due to
+      the discrete nature of 0/1 error, it is NP hard to minimize. Thus, 0/1 classification functions are commonly modeled with continuous approximations. One common class
+      of approximations are convex surrogate loss functions, which extend between 0 and 1 and are convex, which is a property that makes them easy to minimize.
+
 \end{document}
