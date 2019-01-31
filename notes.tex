@@ -1,6 +1,7 @@
 \documentclass[12pt,titlepage]{article}
 \usepackage[margin=1in]{geometry}
 \usepackage{parskip}
+\usepackage{amsmath}
 
 \let\stdsection\section
 \renewcommand\section{\clearpage\stdsection}
@@ -468,5 +469,82 @@
       Due to this limitation, it can make sense to relax the problem to finding a hyperplane that splits data with the fewest possible classification errors. However, due to
       the discrete nature of 0/1 error, it is NP hard to minimize. Thus, 0/1 classification functions are commonly modeled with continuous approximations. One common class
       of approximations are convex surrogate loss functions, which extend between 0 and 1 and are convex, which is a property that makes them easy to minimize.
+
+  \section{Probabilistic Methods}
+    Data is often incomplete, indirect, or noisy. Considering such forms of uncertainty can help build better models.
+
+    \subsection{Bayesian Learning}
+      Bayes' theorem describes the probability of an event $H$ given evidence $e$.
+
+      $$P(H|e) = \frac{P(e|H)P(H)}{P(e)}$$
+
+      The terms of the above equation are known as follows:
+      \begin{itemize}
+        \item $P(H|e)$: Posterior probability
+        \item $P(e|P)$: Likelihood
+        \item $P(H)$: Prior probability
+        \item $P(e)$: Normalizing constant
+      \end{itemize}
+
+      Bayesian learning consists of determining the posterior probability using Bayes' theorem.
+
+      As an example, consider a bag of candy with an unknown flavor ratio. The possible flavors are cherry and lime. The hypotheses $H$ could be:
+      \begin{itemize}
+        \item $h_1$: 100\% cherry, 0\% lime, $P(h_1) = 0.1$
+        \item $h_2$: 75\% cherry, 25\% lime, $P(h_2) = 0.2$
+        \item $h_3$: 50\% cherry, 50\% lime, $P(h_3) = 0.4$
+        \item $h_4$: 25\% cherry, 75\% lime, $P(h_4) = 0.2$
+        \item $h_5$: 0\% cherry, 100\% lime, $P(h_5) = 0.1$
+      \end{itemize}
+
+      Sample examples $E$ could be:
+      \begin{itemize}
+        \item $e_1$: 1st candy is cherry
+        \item $e_2$: 2nd candy is lime
+        \item $e_3$: 3rd candy is lime
+      \end{itemize}
+
+      Suppose of the first 10 candies, all are lime, and let us compute $P(h_4|e)$. $P(e|h_4) = 0.75^{10}$. $P(e) = \sum_i P(e|h_i)P(h_i) \approx 0.1114$.
+      It follows that $P(h_4|e) = \frac{P(e|h_4)P(h_4)}{P(e)} = \frac{(0.75)^{10} \cdot 0.2}{0.1114} \approx 0.0987$. The probability of the other hypothesis
+      can also be calculated in this manner.
+
+      Bayesian probability is:
+      \begin{itemize}
+        \item \textbf{Optimal}; given a prior probability, no prediction is correct more often than the Bayesian prediction.
+        \item \textbf{Overfitting-free}; all hypothesis are weighted and considered, eliminating overfitting.
+      \end{itemize}
+
+      However, Bayesian learning can be intractable when the hypothesis space grows very large, often as a result of approximating a continuous hypothesis space
+      with many discrete hypotheses.
+
+    \subsection{Maximum a Posteriori}
+      Maximum a Posteriori (MAP) makes predictions based on only the most probable hypothesis $h_{MAP}$ (i.e. $h_{MAP} = \text{arg max}_h P(h|e)$).
+      This differs from Bayesian learning, which makes predictions for all hypotheses weighted by their probability. However, MAP and Bayesian predictions tend
+      to converge as the amount of data increases, and overfitting can be mitigated by giving complex hypotheses a low prior probability. However, finding $h_{MAP}$
+      can be difficult or intractable.
+
+    \subsection{Maximum Likelihood}
+      Maximum Likelihood (ML) simplifies MAP by assuming uniform prior probabilities, and then makes a prediction based on the most probable hypothesis $h_{ML}$.
+      ML tends to be less accurate than MAP and Bayesian predictions, and due to prior probabilities being uniform, is subject to overfitting. However, finding
+      $h_{ML}$ is often easier than $h_{MAP}$, since finding $h_{ML}$ for $P(e|h)$ is equivalent to calculating it for $\sum_n \log{P(e_n|h)}$, which is often
+      easier to optimize.
+
+    \subsection{Determining Priors}
+      Selecting a prior is important for Bayesian learning and MAP estimates. If the posterior distributions $P(H|x)$ are in the same family of functions as
+      the prior probability distributions $P(H)$, then the prior and posterior are known as conjugate distributions, and have properties that make them easy
+      to work with.
+
+    \subsection{Bayesian Linear Regression}
+      The linear regression problem discussed in the above section can be reformulated by assuming part of $y$ to be set from a probability distribution
+      $\eta \sim N(0, \omega^2)$ as follows:
+
+      $$y = w^Tb(x) + \eta$$
+
+      $b$ is a fixed set of basis functions (i.e. $b(x) = [b_1(x), b_2(x), . . ., b_M(x)]$).
+
+      The goal of Bayesian linear regression is not to find the best model parameter $w$, but rather to find a model parameter's posterior distribution
+      as follows:
+
+      $$P(w|y,X) = \frac{P(y|w,X)P(w|X)}{P(y|x)}$$
 
 \end{document}
