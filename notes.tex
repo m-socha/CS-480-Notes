@@ -547,4 +547,63 @@
 
       $$P(w|y,X) = \frac{P(y|w,X)P(w|X)}{P(y|x)}$$
 
+  \section{Linear Models for Classification}
+
+    \subsection{Probabilistic Framework for Classification}
+      As covered in the above section, learning can be viewed as a problem of statistical inference. If we have access to the underlying probability
+      distribution of a set of data, then we can form an optimal Bayesian classifier. In practice, we typically do not know the underlying probability
+      distributions, so we have to estimate them from the available training data.
+
+      It is usually best to choose a family of parametric distributions (e.g. Gaussian or Binomial) and then determine which parameters describe the
+      available training data the best. This is known as a density estimate, and we assume that each point of training data is independently selected
+      from the same distribution.
+
+    \subsection{Generative Learning}
+      The idea behind generative learning is to separately model $P(x|y)$ and $P(y)$, and to use Bayes' theorem to estimate $P(y|x)$.
+
+      $P(x|y) = P(x_1, x_2, ..., x_m|y)$. Using what is known as the naive Bayes assumption, we assume all points $x_i$ are conditionally independent.
+      Thus, $P(x|y) = P(x_1|y) \cdot P(x_2|y) \cdot ... \cdot P(x_m|y)$, greatly simplifying the probability calculation.
+
+      \subsubsection{Training}
+        Training involves finding parameters that maximize $P(y|x) \propto P(y)P(x|y) = \prod_{i=1}^n (P(y_i) \prod_{j=1}^m P(x_{i,j}|y_i))$. The
+        derivative of the log of the above expression can be taken against output variables to find the probabilities of each output. For example,
+        suppose $\theta_1$ is the likelihood that the output of a binary classification problem is 1. The above expression is maximized at
+        $\theta_1 = \frac{1}{n} \sum_{i=1}^n y_i$, which is the number of outputs where $y=1$ over the total number of outputs.
+
+      \subsubsection{Decision Boundary}
+        The decision boundary occurs where $\frac{P(y=1|x)}{P(y=0|x)} = 1$, or equivalently, the log-likelihood ratio $\log{\frac{P(y=1|x)}{P(y=0|x)}} = 0$.
+
+      \subsubsection{Laplace Smoothing}
+        Laplace smoothing, also known as additive smoothing, is a technique used to smooth categorical data. For instance, consider the likelihood
+        ratio $P(x_j|y=1) = \frac{\text{Num instances where } x_j = 1, y = 1}{\text{Num examples with } y = 1}$, and suppose that there are few, or
+        even no instances of $y = 1$. Adding a constant $1$ to the numerator and $2$ to the denominator can help prevent division by 0 and acts as
+        a Bayesian prior. Laplace smoothing introduces some bias, but it is hardly significant with a large number of training examples.
+
+      \subsubsection{Multiclass Classification}
+        The above examples assumed binary classification. For multiclass classification, there are two main options:
+        \begin{itemize}
+          \item Train a single classifier that can produce all classifications.
+          \item Train a 1-vs-all binary classifier for all classes. This is more flexible, but often slower due to the number of separate classifiers
+            that need to be trained, and introduces a class imbalance problem where the target class has relatively fewer points than the aggregation of
+            all other classes.
+        \end{itemize}
+
+    \subsection{Discriminative Learning}
+      Discriminative learning attempts to model $p(y|x)$ directly. Logistic regression is a common example of discriminative learning.
+
+      Logistic regression is used to model binary outputs. Real target values are produced and are then mapped to a value between 0 and 1. Logistic
+      regression assumes an exponential estimation parametric form of the distribution $P(Y|X)$ for the form $\sigma(w^Tx) = \frac{1}{1 + e^{-w^Tx}}$.
+      $\sigma(w^Tx)$ is the probability that $y_i = 1$, and $1 - \sigma(w^Tx)$ is the probability that $y_i = 0$. It follows that
+
+      $$P(Y=1|X) = \frac{1}{1 + \exp{(w_0 + \sum_{i=1}^n w_i X_i)}}$$
+
+      $$P(Y=0|X) = \frac{\exp{(w_0 + \sum_{i=1}^n w_i X_i)}}{1 + \exp{(w_0 + \sum_{i=1}^n w_i X_i)}}$$
+
+      \subsubsection{Training}
+        The goal of training is to find weights that maximize the likelihood $P(x_1, y_1, . . ., x_n, y_n|w) = \prod_{i=1}^n = \sigma(w^Tx_i)^{y_i}(1 - \sigma(w^Tx_i))^{(1 - y_i)}$,
+        which is equivalent to minimizing $-\sum_{i=1}^n y_i \log{(\sigma(w^Tx_i))} + (1 - y_i) \log{(1 - \sigma(w^Tx_i))}$
+
+      \subsubsection{Decision Boundary}
+        The decision boundary of logistic regression is the same as that of the naive Bayesian classifier (i.e. $\log{\frac{P(y=1|x)}{P(y=0|x)}} = 0$).
+
 \end{document}
