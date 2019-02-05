@@ -606,4 +606,83 @@
       \subsubsection{Decision Boundary}
         The decision boundary of logistic regression is the same as that of the naive Bayesian classifier (i.e. $\log{\frac{P(y=1|x)}{P(y=0|x)}} = 0$).
 
+  \section{Support Vector Machines}
+
+    \subsection{Margins}
+      A binary linear classifier can be defined as $h_{w,b}(x) = g(w^Tx + b) = 1 \text{ if } w^Tx + b \geq 0 \text{, otherwise } -1$. A large margin
+      involves points begin far from the decision boundary. There are two main ways to measure margin.
+
+      \subsubsection{Functional Margins}
+        For a training example $(x_i, y_i)$, the functional margin is $\hat{\gamma}_i = y_i(w^T x_i + b)$. However, this is not a good measure of
+        classification confidence, since $w$ and $b$ can be scaled to increase the margin without affecting the classification.
+
+      \subsubsection{Geometric Margins}
+        Geometric margins avoid the above problem with functional margins by normalizing the weight vector $w$. For a training example $(w_i, y_i)$,
+        the geometric margin is $\gamma_i = y_i\frac{w^T x_i + b}{||w||}$.
+        
+      \subsubsection{Margin of Training Set}
+        The margin of a training set is the smallest margin of its individual training examples. Minimizing the geometric margin for a binary classifier
+        is equivalent to minimizing $||w||$.
+
+    \subsection{Optimal Margin Classifier}
+      The goal of an optimal margin classifier is to find the maximum geometric margin for a linearly separable data set. This can be denoted as solving
+      $\max_{w,b} \frac{1}{2}||w||^2$ such that $y_i(w^T x_i + b) \geq 1$ for $i = 1, \dots, n$. This is the problem that a support vector machine (SVM)
+      attempts to solve.
+
+    \subsection{Constrained Optimization}
+
+      \subsubsection{Lagrange Multipliers}
+        The above equation can be treated as a constrained optimization problem. These types of problems can be solved by Lagrange multipliers.
+
+        Given a constrained optimization problem of the form $\min_w f(w)$ such that $h_w(w) = 0$ for $i = 1, \dots, l$, the Lagrangian is defined as
+        $L(w, \beta) = f(w) + \sum_{i=1}^l \beta_i h_i(w)$, where $\beta = \{\beta_1, \dots, \beta_l\}$ are called Lagrangian numbers. To solve for $w$
+        and $\beta$ we set the partial derivatives of $L$ over $w$ and $\beta_i$ to 0.
+
+        Consider an example where we try to minimize $x + y$ such that $w^2 + y^2 = 1$. The Lagrangian is $L(x, y, \beta) = x + y + \beta(x^2 + y^2 + 1)$.
+        Setting the gradient to 0 with respect to $x$, $y$, and $\beta$ produces the system of equations $1 - 2 \beta x = 0$, $1 - 2 \beta y = 0$, and
+        $x^2 + y^2 - 1 = 0$, which can be solved to yield $x = y = -\frac{1}{\sqrt{2}}$.
+
+        The generalized Lagrangian includes a $g_i(w) \leq 0$ constraint for $i = 1, \dots, k$. The generalized Lagrange is denoted as
+        $L(w, a, b) = f(w) + \sum_{i=1}^k \alpha_i g_i(w) + \sum_{i=1}^l \beta_i h_i(w)$.
+
+      \subsubsection{Primal and Dual Problem}
+        Given the generalized Lagrangian above, we can define a primal $\theta_P(w)$ as $\max_{\alpha, \beta, a_i \geq 0} L(w, \alpha, \beta)$. If $f$
+        satisfies all constraints, then $\theta_P(w) = f(w)$, otherwise $\theta_P(w)$ is infinite. The ``primal problem'' consists of finding
+        $p* = \min_w \theta_P(w)$.
+
+        In the ``dual problem'', we first minimize with respect to $w$, and then maximize with respect to $\alpha, \beta$. The dual is defined as
+        $\theta_D(\alpha, \beta) = \min_w L(w, \alpha, \beta)$, and the ``dual problem'' consists of finding
+        $d* = \max_{\alpha, \beta, \alpha_i \geq 0} \theta_D(\alpha, \beta)$.
+
+        The ``max min'' of a function is always less than or equal to the ``min max'', so $d* \leq p*$. Under conditions known as Karush-Kuhn-Tucker (KTT)
+        conditions, $d* = p*$.
+
+    \subsection{Training}
+      The high-level goal of training is to find $w, b$ such that $\frac{1}{2}||w||^2$ is minimized and $y_i(w^Tx_i + b) \geq 1, i = 1, 2, \dots, n$.
+
+      We can write the constraints for each training example $i$ as $g_i(w) = 1 - y_i(w^Tx_i + b) \leq 0$. The Lagrangian of the optimization problem is:
+
+      $$L(w, b, a) = \frac{1}{2}||w||^2 + \sum_{i=1}^n \alpha_i(1 - y_i(w^Tx_i + b))$$
+
+      $\frac{\partial L(w,b,a)}{\partial w} = w - \sum_{i=1}^n \alpha_i y_i x_i$, which is set to 0 at $w = \sum_{i=1}^n \alpha_i y_i x_i$. Also,
+      $\frac{\partial L(w,b,a)}{\partial b} = \sum_{i=1}^n \alpha_i y_i = 0$. Plugging these back into $L$, we end up with the dual problem for
+      SVM being $\max_{\alpha} \sum{i=1}^n \alpha_i - \frac{1}{2} \sum{i,j=1}^n y_i y_j \alpha_i \alpha_j(x_i^T x_j)$ such that $\alpha_i \geq 0$ for
+      $i = 1, \dots, n$ and $\sum_{i=1}^n \alpha_i y_i$ for $i = 1, \dots, n$.
+
+      If both $f$ and $g_i$ are convex, and all $g_i$ can be satisfied for some $w$, then $d* = p* = L(w*, b*, \alpha*)$, where $w*$ is the optimal weight
+      vector set (primal solution) and $\alpha*$ is the optimal support vector set (dual solution). In SVMs, both $f$ and $g_i$ are convex, and for
+      linearly separable data, all $g_i$ can be satisfied simultaneously. $g_i(w)$ that equal 0 are on the decision boundary, and are known as support
+      vectors. The output classifier of a query point $x$ is computed as $h_{w,b}(\hat{x}) = sign(\sum_{i=1}^n \alpha_i y_i (x_i^T \hat{x}) + b)$. Since
+      $a_i > 0$ for only support vectors, only support vectors are considered in this computation.
+
+    \subsection{Handling Non-Linearly Separable Data}
+      Two options to model data that cannot be classified using a linear boundary are:
+      \begin{itemize}
+        \item Relaxing the constraints by allowing some points to be incorrectly classified by the margin. In this case, $\min_{w,b} \frac{1}{2}||w||^2$ such that
+          $y_i(w^Tx_i + b) \geq 1, i = 1, 2, \dots, n$ can be rewritten as $\min_{w} \frac{1}{2}||w||^2 + L_(w^Tx_i + b)$, where $L$ is some loss function penalizing
+          incorrect classifications or points close to the decision boundary. A common loss function is known as hinge loss, and is defined as
+          $\max(1 - y_i(w^Tx_i + b), 0)$.
+        \item Allowing a non-linear decision boundary by finding a linear decision boundary of some mapping $\phi$ of features.
+      \end{itemize}
+
 \end{document}
