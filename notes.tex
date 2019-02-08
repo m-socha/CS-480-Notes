@@ -666,7 +666,7 @@
 
       $\frac{\partial L(w,b,a)}{\partial w} = w - \sum_{i=1}^n \alpha_i y_i x_i$, which is set to 0 at $w = \sum_{i=1}^n \alpha_i y_i x_i$. Also,
       $\frac{\partial L(w,b,a)}{\partial b} = \sum_{i=1}^n \alpha_i y_i = 0$. Plugging these back into $L$, we end up with the dual problem for
-      SVM being $\max_{\alpha} \sum{i=1}^n \alpha_i - \frac{1}{2} \sum{i,j=1}^n y_i y_j \alpha_i \alpha_j(x_i^T x_j)$ such that $\alpha_i \geq 0$ for
+      SVM being $\max_{\alpha} \sum_{i=1}^n \alpha_i - \frac{1}{2} \sum_{i,j=1}^n y_i y_j \alpha_i \alpha_j(x_i^T x_j)$ such that $\alpha_i \geq 0$ for
       $i = 1, \dots, n$ and $\sum_{i=1}^n \alpha_i y_i$ for $i = 1, \dots, n$.
 
       If both $f$ and $g_i$ are convex, and all $g_i$ can be satisfied for some $w$, then $d* = p* = L(w*, b*, \alpha*)$, where $w*$ is the optimal weight
@@ -684,5 +684,42 @@
           $\max(1 - y_i(w^Tx_i + b), 0)$.
         \item Allowing a non-linear decision boundary by finding a linear decision boundary of some mapping $\phi$ of features.
       \end{itemize}
+
+  \section{Kernel Methods}
+    As mentioned in the section above, the dual form of SVM can be expressed as $\max_{\alpha} \sum_{i=1}^n \alpha_i - \frac{1}{2} \sum_{i,j=1}^n y_i y_j \alpha_i \alpha_j(x_i^T x_j)$
+    such that $\alpha_i \geq 0$ for $i = 1, \dots, n$ and $\sum_{i=1}^n \alpha_i y_i$ for $i = 1, \dots, n$. If applying a feature mapping $\phi$, the $x_i^T$ and $x_j$ terms become
+    $\phi(x_i)^T$ and $\phi(x_j)$ respectively. It follows that classification of an input $x$ is given by $sign(\sum_{i=1}^n \alpha_i y_i (\phi(x_i)^T \phi(\hat{x})) + b)$, where
+    $\phi(x_i)^T \phi(\hat{x})$ is known as the kernel.
+
+    \subsection{Motivation}
+      A linear model does not make use of $\phi$, which results in simple decision boundaries. Data that is not linearly separable is often separable in higher dimensions, introducing
+      the need for more complex mappings $\phi$.
+
+      The motivation for adding kernels is similar to that of expanding the feature space to include more terms. For example, consider a quadratic feature space, where a set of features
+      $x_1, x_2, \dots, x_m$ is mapped to $x_1 x_1, x_1 x_2, \dots x_1 x_m, x_2 x_1, x_2 x_2, \dots, x_2 x_m, \dots$. Problems with such a large feature space are increased computational
+      cost and an increased chance of overfitting. However, this feature space can be represented by the kernel function $K(x, z) = (x^Tz)^2$, in which case its calculation takes $O(m)$
+      steps instead of $O(m^2)$. Kernels can be widely applied to reduce computational complexity by rewriting algorithms in SVM dual form and then transforming the dot product term
+      into a kernel function.
+
+    \subsection{Common Kernels}
+      \begin{itemize}
+        \item \textbf{Radial basis function (RBF)/Gaussian Kernel} $K(x, z) = \exp(-\frac{||x - z||^2}{2 \sigma^2})$: High when points are close, decreases as points are further apart.
+        \item \textbf{Linear Kernel} $K(x, z) = x \cdot z$
+        \item \textbf{Polynomial Kernel} $K(x, z) = (1 + x \cdot z)^d$: Feature expansion has monomial terms of power $d$.
+      \end{itemize}
+
+    \subsection{Kernel Properties}
+      Let a kernel matrix $K$ for $n$ points $x_1, \dots, x_n$ be defined as $K_{ij} = K(x_i, x_j)$. A kernel $K$ is considered to be a Mercer kernel if and only if
+      for any finite set of $n$ points, the corresponding kernel matrix is symmetric and positive semi-definite. Symmetric means that $K(x_i, x_j) = K(x_j, x_i)$.
+      Positive semi-definite means that for all functions $f$ that are square integrable (i.e. $\int f(x)^2 dx < \infty$) other than the 0 function,
+      $\int \int f(x) K(x, z) f(z) dx dz > 0$.
+
+      This characterization is useful because it provides ways to construct kernels from other kernels. For example, adding, multiplying, or scaling two Mercer kernels
+      always generate a Mercer kernel.
+
+    \subsection{Kernel Perceptron Algorithm}
+      By the perceptron representer theorem, the weight vector during a run of the perceptron algorithm can be described as a linear combination of the expanded training
+      data (i.e. $w = \sum_{i=1}^n a_i \phi(x_i)$). We can alter the perceptron algorithm using this property to update $a$ to be $w \cdot \phi(x) + b$ and $w$ to be
+      $w + y \phi(x)$.
 
 \end{document}
