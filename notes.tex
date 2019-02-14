@@ -327,7 +327,7 @@
       The perceptron learning algorithm starts with any (e.g random) $w$ and $b$ parameters, and iterates over each point training point as follows:
       \begin{enumerate}
         \item Compute the activation $a$ for the point.
-        \item Compute the classification $y$ based on the activation $a$ (i.e. 1 is $a \geq 0$, otherwise 0).
+        \item Compute the classification $y$ based on the activation $a$ (i.e. 1 if $a \geq 0$, otherwise 0).
         \item If the perceptron correctly classifies the point, continue.
         \item Otherwise, update the weights as $w_d = w_d + yx_d$, and update the bias as $b = b + y$. This guarantees that this point is correctly classified for this
           iteration.
@@ -351,8 +351,8 @@
         that after selecting weights that correctly classify thousands of training points, a single mislabeled point updates the weights in a way that drastically changes
         the decision boundary in order to correctly classify this new point, but in doing so, mislabels many training points that were previously correctly classified.
 
-        This problem can be mitigated by favoring weight vectors that ``survive'' a long time. This can be done by letting the activation $a$ use a weighted sum of
-        weight vectors, each of which in term is weighted by its survival time (i.e. voted perceptron algorithm). Alternatively, a single weight vector and bias term
+        This problem can be mitigated by favoring weight vectors that ``survive'' a long time. This can be done by letting the activation $a$ use a sum of
+        weight vectors, each of which in turn is weighted by its survival time (i.e. voted perceptron algorithm). Alternatively, a single weight vector and bias term
         can be tracked using the weighted average of their survival times (i.e. average perceptron algorithm).
 
     \subsection{Convergence}
@@ -372,7 +372,7 @@
       \begin{itemize}
         \item The generated solutions (i.e. separating hyperplanes) may not be unique.
         \item Non linearly-separable data cannot be modeled. In some cases, this limitation can be overcome by transforming feature vectors so
-          they become linearly separable, or by combining multiple perceptrons, which create a network that might be able to learn non-linear boundaries.
+          they become linearly separable, or by combining multiple perceptrons, which can create a network that might be able to learn non-linear boundaries.
       \end{itemize}
 
   \section{Linear Models}
