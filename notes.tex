@@ -396,10 +396,10 @@
 
       $$L(w,b) = \sum_n exp(-y_n(w^Tx_n + b)) + \frac{\lambda}{2}||w||^2$$
 
-      The partial derivative of $L$ over $b$ is $-\sum_n y_n \exp(-y_n(w^Tx_n + b))$, so $b$ is adjusted in each step to $b - \eta \sum_n y_n \exp(-y_n(w^Tx_n + b))$.
+      The partial derivative of $L$ over $b$ is $-\sum_n y_n \exp(-y_n(w^Tx_n + b))$, so $b$ is adjusted in each step to $b + \eta \sum_n y_n \exp(-y_n(w^Tx_n + b))$.
 
       The partial derivative of $L$ over $w$ is $(-\sum_n y_n x_n \exp(-y_n(w^Tx_n + b))) + \lambda w$, so $w$ is adjusted in each step to
-      $w - \eta ((-\sum_n y_n x_n \exp(-y_n(w^Tx_n + b))) + \lambda w)$.
+      $w + \eta ((-\sum_n y_n x_n \exp(-y_n(w^Tx_n + b))) + \lambda w)$.
 
       The learning rate $\eta$ impacts the size of each step. A high learning rate can result in oscillations around local minima, while a low learning rate results in training
       being slow. It is common to lower the learning rate during later steps. When parameters start to not change by much, then a local minimum has likely been approached, and
