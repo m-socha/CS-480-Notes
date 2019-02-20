@@ -722,4 +722,65 @@
       data (i.e. $w = \sum_{i=1}^n a_i \phi(x_i)$). We can alter the perceptron algorithm using this property to update $a$ to be $w \cdot \phi(x) + b$ and $w$ to be
       $w + y \phi(x)$.
 
+  \section{Feature Construction and Selection}
+    A high-level overview of a supervised learning procedure is:
+    \begin{enumerate}
+      \item Decide what the inputs and outputs of a problem are.
+      \item Decide how to model these inputs and outputs.
+      \item Choose a class of hypotheses.
+      \item Choose a cost function to help find the best hypothesis.
+      \item Chose an algorithm for searching the hypothesis space.
+    \end{enumerate}
+
+    So far, this course has covered 3-5. This section focuses on points 1 and 2.
+
+    \subsection{Feature Construction}
+      Features can be modified for various reasons, including to increase predictor performance and to reduce time or memory requirements.
+      Below are common techniques for constructing features.
+
+      \subsubsection{Transformation}
+        Common feature transformations include:
+        \begin{itemize}
+          \item \textbf{Centering} each feature to be around the origin.
+          \item \textbf{Scaling} each feature to be of the same scale. For example, scaling can be done to make sure each feature has the same
+            variance or the same maximum absolute value.
+          \item \textbf{Logarithmically} transforming each feature to reduce the skewness of feature distributions.
+        \end{itemize}
+
+        Note that feature transformation runs the risk of discarding useful information. For example, scaling to make each feature have the same
+        variance should not be done if the differing variances of the features are actually relevant to the problem.
+
+      \subsubsection{Feature Expansions}
+        Feature expansion involves combining multiple features into new features when first order interactions are not good enough. For example, given
+        features $x_1$ and $x_2$, $x_1 \cdot x_2$ is a new feature (i.e. meta-feature) formed by an expansion of $x_1$ and $x_2$.
+
+      \subsubsection{``Ad hoc'' Features}
+        Constructing ad hoc features involves applying domain knowledge to introduce custom features.
+
+    \subsection{Feature Selection}
+      Irrelevant features are features that are uncorrelated with a prediction task. Redundant features are features that are highly correlated with
+      one another, so using multiple redundant features does not help with predictions much more than using a single such feature.
+
+      Different learning algorithms have differing levels of robustness to irrelevant or redundant features. For example, decision trees are robust
+      to redundant features, since such features have low information gain, while KNN is not, since the set of redundant features will behave as one heavily
+      weighted feature. When possible, these feature should not be selected in the first place. Below are common ways to avoid selecting such features.
+
+      \subsubsection{Wrapper Methods}
+        Wrapper methods involve building a model for feature subsets, and then selecting the best performing model. A ``forward search'' approach
+        starts with no features and then adds the feature that best improves the model until a certain number of features are selected.  A
+        ``backward'' search approach starts with all features and removes the feature that improves the model the least until a certain number
+        of features have been removed.
+
+        Computing all possible feature subsets would guarantee finding the optimal one. However, a problem with $m$ features has $2^m$ possible
+        feature subsets, so finding all possible subsets is infeasible for large values of $m$. The forward and backward search approaches
+        approximate this but with a time complexity of $O(m^2)$.
+
+      \subsubsection{Filter Methods}
+        Filter methods, also known as variable ranking, involve assigning each feature a score measuring how informative it is in predictions. This
+        score is determined by some ``scoring function'' $S$. Features are then ranked by score, and a number of top features are selected.
+
+      \subsubsection{Embedded Methods}
+        Embedded methods involve  modifying the cost function to constrain the choice of model. A common example of this is regularization, which can
+        be used to penalize complex models and encourage a sparse feature set.
+
 \end{document}
