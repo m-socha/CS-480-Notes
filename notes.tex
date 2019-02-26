@@ -783,4 +783,64 @@
         Embedded methods involve  modifying the cost function to constrain the choice of model. A common example of this is regularization, which can
         be used to penalize complex models and encourage a sparse feature set.
 
+  \section{Ensemble Learning}
+    Ensemble learning models combine multiple different machine learning models to form predictions. Such models can lead to improved performance over
+    machine learning models that use a single algorithm, often without a large increase in training and test time due to ease of parallelization.
+
+    The machine learning models applied in ensemble learning can differ in either their algorithm or in their training data. This section focuses on
+    techniques for forming different subsets of training data.
+
+    \subsection{Baggings}
+      Recall that in bootstrapping, $N$ training examples are drawn randomly from a dataset $D$ with replacement. Bagging can be described as bootstrap
+      aggregation, where each subset of data formed by a round of bootstrapping is used to train its own model. For a classification problem, the
+      overall prediction is the most common prediction of the models. For a regression problem, the overall prediction is the average prediction of the
+      models.
+
+      Baggings tends to reduce variance, since even if individuals models overfit to their data, different models will overfit in different ways. However,
+      baggings tends to increase bias. Therefore, bagging is most useful when used with models that are unstable and prone to overfitting (e.g. tall decision
+      trees). Drawbacks of bagging include a loss of interpretability of results and an increase in computational complexity.
+
+    \subsection{Random Forests}
+      Random forest ensemble learning algorithms address that it is often computationally expensive to train parallel decision trees. In random forests,
+      a tree's structure is fixed, and decision nodes are filled with randomly selected features. A common random forest algorithm is as follows:
+
+      \begin{enumerate}
+        \item Form $K$ bootstrapped subsets of a dataset $D$.
+        \item For each of the $K$ subsets, train a decision tree as follows:
+        \begin{enumerate}
+          \item Pick a random subset of $m$ features at each node. Smaller values of $m$ result in more randomized trees.
+          \item Select the feature with maximal information gain.
+          \item Recurse until the tree reached a predefined maximal depth.
+        \end{enumerate}
+      \end{enumerate}
+
+      The effects of a random forest algorithm are similar to those of bagging. Variance decreases, since different trees will overfit in different ways,
+      and bias increases. A recurring pattern in ensemble learning algorithms is to form lots of randomized hypothesis and average their results.
+
+    \subsection{Boosting}
+      Instead of averaging out random hypotheses, boosting operates by placing extra weight on training instances that are problematic for the current
+      hypothesis. Boosting can be used to gradually adapt a weak learning model (i.e. one only loosely correlated with correct predictions) to eventually
+      be a strong learning model.
+
+      AdaBoost (adaptive boosting algorithm) is a widely-used, simple, and efficient boosting algorithm. The AdaBoost algorithm for binary classification is
+      defined as follows:
+      \begin{enumerate}
+        \item Given training data $(x_1, y_1), \dots, (x_m, y_m)$, where $Y \in \{-1, +1\}$, initialize $D_1(i) = \frac{1}{m}$.
+        \item For $t = 1, \dots, T$:
+          \begin{enumerate}
+            \item Using dataset $D_t$, train a ``decision stump'', which is some simple weak learner such as a single-node decision tree.
+            \item Obtain the weak hypothesis $h_t: X \rightarrow \{-1, +1\}$ with error probability $\epsilon_t$.
+            \item Let $\alpha_t = \frac{1}{2} \ln(\frac{1 - \epsilon_t}{\epsilon})$. $\alpha_t$ is determines the rate at which the hypothesis will change.
+            \item If $h_t(x_i) = y_i$, then $D_{t+1}(i) = \frac{D_t(i)}{Z_t}e^{-\alpha_t}$ and otherwise $D_{t+1}(i) = \frac{D_t(i)}{Z_t}e^{\alpha_t}$.
+              This can be expressed as $D_{t+1}(i) = \frac{D_t(i)\exp(-\alpha_t y_i h_t(x_i))}{Z_t}$. $Z_t$ is some normalization factor chosen so
+              that $D_{t+1}$ is a probability distribution.
+          \end{enumerate}
+        \item The final hypothesis is $H(x) = sign(\sum_{t=1}^T \alpha_t h_t(x))$.
+      \end{enumerate}
+
+      \subsubsection{Bagging vs Boosting}
+        Bagging techniques tend to reduce variance and increase bias, and tend to only be effective with reasonably sophisticated models. On the other hand,
+        boosting techniques reduce bias, and work well with very simple initial models. Boosting can lead to overfitting as the number of iterations increases,
+        though in practice this is rarely a concern.
+
 \end{document}
