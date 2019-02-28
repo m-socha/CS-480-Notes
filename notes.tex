@@ -843,4 +843,61 @@
         boosting techniques reduce bias, and work well with very simple initial models. Boosting can lead to overfitting as the number of iterations increases,
         though in practice this is rarely a concern.
 
+  \section{Active Learning}
+    In supervised learning examples covered so far, models are trained using a set of pre-labeled training data. In active learning, we assume a learner has
+    access to a pool of unlabeled data, and can request labeling for specific points. The motivation behind active learning is that labeling can be expensive,
+    so resources can be saved by letting an algorithm pick which subset of data points should be labeled to make good enough decisions.
+
+    In general, if a distribution can be classified perfectly by some hypothesis $h$ and $\epsilon$ is the maximum tolerated error rate, then testing
+    $\frac{1}{\epsilon}$ training instances yields a model with the desired error rate.
+
+    \subsection{Query Scenarios}
+
+      \subsubsection{Query Synthesis}
+        Query synthesis involves a learner having access to some unlabeled input space or unlabeled distribution of inputs. A learner uses this to create
+        new points and queries some ``oracle'' to label them.
+
+      \subsubsection{Selective Sampling}
+        Selective sampling involves a learner observing inputs from a continuous data stream. For each point, the learner decides to either discard the
+        point or to label it. Unlike query synthesis, where a learner creates its own training points, selective sampling ensures training points come from
+        the true underlying data distribution.
+
+      \subsubsection{Pool-based Active Learning}
+        Pool-based active learning involves a learner having access to a pool of unlabeled examples. The learner iteratively chooses the best (i.e. most informative)
+        example from this pool and gets it labeled.
+
+    \subsection{Selection Strategies}
+
+      \subsubsection{Uncertainty Sampling}
+        In uncertainty sampling, a learner selects the training point that it is most uncertain about. Definitions of the ``most uncertain'' point can include:
+        \begin{itemize}
+          \item Least confident point (i.e. most likely labeling has the lowest probability).
+          \item Point with smallest margin (i.e. smallest difference in probabilities of top 2 labelings).
+          \item Point with maximum entropy (i.e. has most similar probabilities across all labels).
+        \end{itemize}
+
+        Uncertainty sampling can be carried out for pool-based active learning by querying for a set of most uncertain points, labeling them, retraining
+        the model, and repeating. Uncertainty sampling also be used for selective sampling by defining an uncertainty threshold, and only labeling points
+        that meet this threshold.
+
+      \subsubsection{Query-By-Committee (QBC)}
+        A major drawback for uncertainty sampling is that only a single classifier is used. This classifier can be overly confident about some points without
+        being corrected.
+
+        In a query-by-committee approach, a set of classifiers (typically a small set, even just 2 classifiers) only label points for which committee members do
+        not agree on the label. Committees can be built in a variety of ways, including using different types of training models or a set of models trained in
+        ensemble learning.
+
+        For QBC in pool-based active learning, the level of disagreement is measured for each training point. A selection of most disagreeable points is labeled,
+        the committee models are retained, and the process repeats. QBC can be used for selective sampling by only querying points beyond some disagreement
+        threshold. Disagreement is measured by some entropy calculation among the votes.
+
+        Handling outliers can be a problem in QBC, since these are expected to produce disagreements even if the models are in agreement for the vast majority
+        of points. Ways to mitigate this problem include:
+        \begin{itemize}
+          \item Weighting disagreement by some measure of the similarity of a point to other points in its pool. This idea behind this is that informative
+            training examples are ones representative of their input space. 
+          \item Including the total estimated error reduction in disagreement calculations.
+        \end{itemize}
+
 \end{document}
