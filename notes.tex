@@ -900,4 +900,73 @@
           \item Including the total estimated error reduction in disagreement calculations.
         \end{itemize}
 
+  \section{Unsupervised Learning}
+    Supervised learning problems consist of training examples with corresponding labels. In unsupervised learning problems, these labels are missing.
+    Below are some methods that can be used to analyze unlabeled data.
+
+    \subsection{K-Means Clustering}
+      Clustering involves partitioning data into similar groups. K-means clustering is a common clustering model that represents each cluster by a center
+      point, and other points are assigned to their nearest cluster. The algorithm is as follows:
+
+      \begin{enumerate}
+        \item Select a desired number of clusters $K$.
+        \item Assume some parametric distribution for each class.
+        \item Initialize the parameters of the distributions.
+        \item Until convergence, perform the following:
+          \begin{enumerate}
+            \item Assign points to the cluster to which they most likely belong based on the parametric distributions.
+            \item Re-estimate the parametric distributions of each class based on their points.
+          \end{enumerate}
+      \end{enumerate}
+
+      \subsubsection{Convergence}
+        K-means clustering is guaranteed to converge to a local optimum, and in practice does so fairly quickly. The optimum converged upon and the rate
+        of convergence depends on the initialization of the distribution parameters, which can be done randomly or in a carefully selected way.
+
+      \subsubsection{Selection of $K$}
+        $K$ is often chosen experimentally by finding a solution for different values of $K$ and then picking the one that optimized some criterion.
+
+        Let $I_k$ be the set of indices of data points within cluster $C_k$, and let $n_k$ be the number of data points in cluster $C_k$. A common
+        measure of the quality of a clustering solution is as follows:
+
+        \begin{itemize}
+          \item $\bar{x} = \frac{1}{n} \sum_{i=1}^n x_i$.
+          \item $\bar{x}_k = \frac{1}{n_k} \sum_{i \in I_k} x_i$.
+          \item $W(K) = \sum_{k=1}^K \sum_{i \in I_k} ||x_i - \bar{x}_k||^2$, which is a measure of the similarity of the grouping of clusters.
+          \item $B(K) = \sum_{k=1}^K n_k ||\bar{x}_k - \bar{x}||^2$, which is a measure of how spread apart different clusters are.
+        \end{itemize}
+
+        The goal is to pick a $K$ such that $W(K)$ is small and $B(K)$ is large. This can be measured by the Calinski-Harabasz index, which is
+        defined as $CH(K) = \frac{B(K)/(K-1)}{W(K)/(N - K)}$. Values of $K$ can be increased until some upper limit, and then the solution with
+        the highest  Calinski-Harabasz index is selected.
+
+    \subsection{Hierarchical Clustering}
+      Hierarchical clustering is a clustering algorithm in which higher-level clusters are formed by merging clusters at lower levels. Clusters
+      can be built using either a bottom-up approach, where smaller clusters are repeatedly merged, or a top-down approach, where larger clusters
+      are repeatedly split.
+
+      A hierarchical clustering solution can be visualized as a dendogram, which is a type of tree in which each node represents a cluster. Leaves
+      contain a single point, the root contains the entire dataset, and internal nodes point to the subgroups from which form them. Internal nodes
+      are drawn at a height that reflects the dissimilarity between their children.
+
+      To measure dissimilarity between groups $G$ and $H$, some linkage criterion $d(G, H)$ is used. Common linkage functions include:
+      \begin{itemize}
+        \item Single linkage (i.e. distance to nearest neighbor).
+        \item Complete linkage (i.e. distance to furthest neighbor). This is less sensitive to noise and outliers than single linkage.
+        \item Average linkage (i.e. average distance between points in opposite groups).
+      \end{itemize}
+
+    \subsection{Principal Component Analysis (PCA)}
+      A data set can be simplified by removing redundant dimensions. PCA does this by finding a vector that points in the direction of maximum
+      variance, which is done by finding a fixed-size subset of orthonormal basis vectors that can express the original data set with maximum
+      accuracy. This is equivalent to the following:
+
+      \begin{enumerate}
+        \item For each dimension, subtract the mean dimension value from each point (i.e. points should be normalized at 0).
+        \item Calculate the covariance matrix.
+        \item Calculate the eigenvectors and eigenvalues of the covariance matrix.
+        \item To form a $k$-dimensional orthonormal basis, select $k$ eigenvectors with the largest eigenvalues.
+        \item Construct a new dataset by expressing each point using the new basis.
+      \end{enumerate}
+
 \end{document}
