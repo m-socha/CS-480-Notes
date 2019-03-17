@@ -1100,4 +1100,21 @@
             similar to that of ensemble learning.
         \end{itemize}
 
+    \subsection{Convolutional Neural Networks}
+      Convolutional neural networks (CNNs) are a class of neural networks designed to:
+      \begin{itemize}
+        \item Handle very high-dimensional inputs.
+        \item Exploit 2D and 3D topologies.
+        \item Be invariant to certain types of transformations such as translations and illuminations.
+      \end{itemize}
+
+      These properties make CNNs well tailored to analyzing visual data such as pictures. In such applications, each input and output is a 3D tensor (i.e. a 2D image plus a
+      set of colors such as RGB). To achieve the above properties, CNNs apply the following ideas:
+      \begin{itemize}
+        \item \textbf{Local connectivity}. A hidden unit is connected to some local section of an image.
+        \item \textbf{Pooling units}. Pooling involves combining adjacent layers exploiting local connectivity to find patterns across larger spatial areas. CNNs typically
+          alternate between convolutional, pooling, and fully connected layers. This can make them much deeper than the 2-hidden-layer theoretical bound discussed earlier,
+          though this deep learning approach seems to work well in practice (though theoretical understanding of why is still limited).
+      \end{itemize}
+
 \end{document}
