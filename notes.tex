@@ -1035,4 +1035,69 @@
         \item \textbf{Semi-Supervised SVM}, which involves finding the labelling of $X_u$ that results in an SVM with the largest margin.
       \end{itemize}
 
+  \section{Neural Networks}
+    Neural networks are a kind of framework for combining machine learning algorithms together. These networks consist of nodes called neurons that receive input
+    from other neurons, manipulate it, and propagate it to further neurons.
+
+    \subsection{Feed Forward Neural Networks}
+      Feed forward neural networks consist of layer of neurons. Layer 0 is the input layer, and simply copies the input. The final layer provides the final output.
+      Layers in between propagate values only to the next layer (i.e. there is no cross-connection between neurons in the same layer, and there are no backward connections).
+      A fully connected network is one in which all neurons in layer $k$ provide input to all neurons in layer $k+1$.
+
+      $x_i$ denotes the vector of inputs entering unit (i.e. neuron) $i$, $w_i$ denotes the vector of weights entering unit $i$, and $o_i$ denotes the output of unit $i$.
+      Generally speaking, a sigmoid activation is used to determine the output (i.e. $o_i = \sigma(w_i \cdot x_i)$, where $\sigma = \frac{1}{1 + e^{-x}}$. These formulas
+      can be used to compute the output of a feed forward neural network layer-by-layer.
+
+      \subsubsection{Learning}
+        The goal of learning in a neural network is to find a set of weights that minimize the error at the network's last layer (i.e. the output). An advantage of using
+        the sigmoid function to compute neuron outputs is that it is differentiable, so approaches based on gradient descent can be applied. The process is as follows:
+
+        \begin{enumerate}
+          \item Select initial values for weights.
+          \item Let $o$ be the output of the neural network (let this be denoted by node $k$) for a selected training example (assuming a single output node). For the output
+            unit, the adjustment is $\delta_{k} o(1-o)(y-o)$.
+          \item For each hidden (i.e. inner) unit $h$, the adjustment is $\delta_{h} = o_h(1 - o_h)w_{k,h}\delta_{k}$.
+          \item Update each network weight by adding the adjustment multiplied by the input $x$ to the neuron and some learning rate $\alpha$.
+          \item Repeat steps 2-4 until the gradient descent process converges.
+        \end{enumerate}
+
+        This gradient descent can be applied on a single example at a time, or through batch gradient descent, where all (or some subset, which is known as mini-batch
+        gradient descent) the training examples are looped through to accumulate weight changes, and only then the weights are updated. Note that since this is a gradient
+        descent algorithm, its convergence is to a local minimum.
+
+        Neural networks are often very sensitive to changes in learning rate, and the learning rate can be difficult to tune by hand. Learning rates often differ between
+        layers, and it is often good to start with a higher learning rate and then decrease it later during training.
+
+      \subsubsection{Depth of Network}
+        A single sigmoid neuron has the same representation power as a perceptron. A neural network with a single hidden layer can represent every boolean function, and
+        all bounded continuous functions can in turn be approximated using boolean functions to an arbitrary level of precision. A network with two hidden layers can
+        approximate any function to an arbitrary level of precision. There is no theoretical reason for a neural network to have more than 2 layers, and 1 hidden layer is
+        sufficient for most problems.
+
+        Note that deeper neural networks are often more difficult to train. This is because the gradient adjustment is multiplied by the weight in hidden layers of the
+        network, and since the weight is typically between $-1$ and $1$, repeated multiplications tend to decrease the magnitude of the adjustment.
+
+      \subsubsection{Input Encoding}
+        Discrete inputs are typically encoding using ``1-hot'' or ``1-of-k'' encoding. There is a one-to-one mapping between possible inputs and input bits. Only a single
+        input bit can be set to 1, and the $k$th bit being set to 1 encodes the $k$th input.
+
+        Real-valued inputs typically need to be normalized (e.g. set mean to 0 and set variance to a desired value). Some discretized approximations include 1-to-n
+        encoding, where the input is discretized into $n$ intervals, and thermometer encoding, which is similar to 1-to-n but if a variable falls in the $i$th interval,
+        all bits from 1 to $i$ are set to 1 instead of just $i$. Thermometer encoding tends to perform better than 1-to-n encoding.
+
+      \subsubsection{Output Encoding}
+        Multiple output units can be used to output values for different classes. This allows for training a multi-class classifier instead of a bunch of 1-vs-all classifiers.
+        Another use for multiple outputs units is to encode different ranges of the output, which can be useful when using neural networks for regression problems.
+
+      \subsubsection{Overfitting and Underfitting}
+        Networks with many hidden features are prone to overfitting, while networks without many hidden features are susceptible to underfitting. Overtraining is a neural
+        network phenomenon related to overfitting, and describes how a network tends to have more and more active (i.e. high weight) nodes as training progresses.
+
+        Two common techniques to mitigate overfitting in neural networks are:
+        \begin{itemize}
+          \item \textbf{Regularization}, which can help keep weights low by incorporating some penalty term that prefers simple models.
+          \item \textbf{Dropout}, which involves dropping nodes at random in each training iteration. These nodes are all combined later on, which can yield effects
+            similar to that of ensemble learning.
+        \end{itemize}
+
 \end{document}
