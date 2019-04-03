@@ -1117,4 +1117,43 @@
           though this deep learning approach seems to work well in practice (though theoretical understanding of why is still limited).
       \end{itemize}
 
+    \subsection{Recurrent Neural Networks}
+      In datasets that are sequences, it is important to capture the ordering of the inputs. Recurrent neural networks (RNN) are useful for dealing with sequences of data
+      because their outputs can be fed back to their inputs, allowing them to maintain an internal memory based on previous inputs.
+
+      Although an RNN can be unrolled over time to generate a feed forward neural net, RNNs can handle varying input lengths, and generate a longer feed forward neural net
+      for longer input sequences. RNNs support arbitrary topologies (i.e. any node can feed into any other node).
+
+      \subsubsection{Input Encoding}
+        The most common way to model inputs in RNNs is to specify the states of a subset of nodes (i.e. the input nodes) for each step. For example, if modeling a sequence of
+        words, the first step corresponds to the first word, the second step corresponds to the second word, and so forth.
+
+      \subsubsection{Output Encoding}
+        The output can be represented as the final activation of a subset of units, or by the activation of this subset of units over several steps (useful if treating the output
+        as a sequence).
+
+      \subsubsection{Learning}
+        Training an RNN is equivalent to training its unrolled feed forward neural net. Note that the feed forward neural nets can have repeated weights. The training procedure
+        is as follows:
+        \begin{enumerate}
+          \item Compute the activations of all nodes.
+          \item Compute error derivatives at each step of the unrolled RNN.
+          \item Add together the derivatives for each weight, and adjust the weights accordingly.
+        \end{enumerate}
+
+        In general, RNNs are considered difficult to train. Setting initial states can be challenging, and training gradients often become very small or very small. Also, although
+        RNNs can maintain internal memory, they struggle to hold onto it very long.
+
+      \subsubsection{Long Short Term Memory}
+        Long short term memory (LSTM) is a node architecture for RNNs that overcomes many of the above challenges. Instead of each node having standard input and output edges, each
+        node has a:
+
+        \begin{itemize}
+          \item \textbf{Write gate}, which if activated, allows information to enter the node.
+          \item \textbf{Keep gate}, which if activated, allows the incoming information to be stored in the node.
+          \item \textbf{Read gate}, which if activated, allows information to be read the node.
+        \end{itemize}
+
+        The introduction of a keep gate allows for better modeling of long term memory dependencies. Each gate is controlled by a separate activation vector.
+
 \end{document}
