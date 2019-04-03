@@ -1156,4 +1156,12 @@
 
         The introduction of a keep gate allows for better modeling of long term memory dependencies. Each gate is controlled by a separate activation vector.
 
+    \subsection{Generative Adversarial Networks}
+      So far, we discussed how neural networks can be used for classification and regression problems. However, neural networks can also be used to generate data.
+
+      The goal of generative adversarial networks is to generate data similar to example input data. A generative network produces data, and passes it as input into
+      a separate discriminative neural network which accepts the data if it resembles the examples, and otherwise rejects it. These two networks complete is a zero
+      sum game; the discriminator tries to maximize its recognition of that actual examples come from some underlying distribution and minimize the change of accepting
+      ``fake'' examples produced by the generative network, while the generative network tries to do the opposite.
+
 \end{document}
