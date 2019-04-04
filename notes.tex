@@ -1164,4 +1164,40 @@
       sum game; the discriminator tries to maximize its recognition of that actual examples come from some underlying distribution and minimize the change of accepting
       ``fake'' examples produced by the generative network, while the generative network tries to do the opposite.
 
+  \section{Structured Prediction}
+    Some machine learning problems have a very large number of correlated outputs. For example, labelling parts of speech results in a separate label for each word, and
+    these labels are dependent on one another.
+
+    Structured prediction models are designed to predict such ``structured'' objects with many outputs. This section focuses on score-based structured prediction. For some
+    scoring function $s$, let $x$ be an input, let $\hat{y}$ be the predicted output, and let $y$ be the actual output. $s(x, \hat{y})$ measures the compatibility between
+    $x$ and $\hat{y}$ (i.e. ``better'' predictions should score higher), and $s(x, y)$ should produce the maximum value.
+
+    \subsection{Structured Perceptron}
+      In multi-class perceptron problems, we define a feature function $\theta(x, y)$, which takes in an input $x$, and output $y$, and outputs some describing how compatible
+      $x$ is with $y$. For some vector $w$, we define $s(x, y) = w^T\theta(x,y)$ (i.e. $w$ determines how to weigh the compatibility features). The goal is to learn a $w$
+      such that the correct output maximizes the scoring function.
+
+      The multi-class perceptron algorithm runs as follows:
+      \begin{enumerate}
+        \item Initialize $w$.
+        \item For each example $x$:
+          \begin{enumerate}
+            \item Find a label $\hat{y}$ that maximizes the score.
+            \item If the prediction is correct (i.e. $\hat{y} = y)$, continue.
+            \item If the prediction is incorrect, we update $w$ so that the prediction becomes correct (i.e. $w = w + \theta(x, \hat{y}) - \theta(x, y)$).
+          \end{enumerate}
+      \end{enumerate}
+
+      Structured perceptron is very similar to multi-class perception, but finding a label that maximizes the score can be intractable. The ``optimal'' label can be found by
+      making approximations or by applying some problem-specific search algorithms.
+
+    \subsection{Structured SVM}
+      SVMs support complex loss functions. Structured SVM problems typically use a variant of Hamming loss $l(y, \hat{y})$, which is the fraction of output labels that are
+      incorrectly predicted. Since $s(x, y)$ is supposed to be larger than any other $s(x, \hat{y})$, we add the constraint $s(x, y) - s(x, \hat{y}) \geq l(y, \hat{y}) - \epsilon$,
+      where $\epsilon$ is some slack variable allowing for points to be on the wrong side of the decision margin.
+
+      However, we end up with a different slack variable for every possible output, which can make the SVM optimization problem intractable. Instead of stating that
+      $s(x, y) - s(x, \hat{y}) \geq l(y, \hat{y}) - \epsilon$ must apply to all $\hat{y}$, we can say it needs only apply to the most confusing imposter (i.e. the $\hat{y} \neq y$
+      with a maximum $s(x, \hat{y}) + l(y, \hat{y})$). The weights of the resulting optimization problem can be minimized using a gradient descent approach.
+
 \end{document}
