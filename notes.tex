@@ -1200,4 +1200,37 @@
       $s(x, y) - s(x, \hat{y}) \geq l(y, \hat{y}) - \epsilon$ must apply to all $\hat{y}$, we can say it needs only apply to the most confusing imposter (i.e. the $\hat{y} \neq y$
       with a maximum $s(x, \hat{y}) + l(y, \hat{y})$). The weights of the resulting optimization problem can be minimized using a gradient descent approach.
 
+  \section{Reinforcement Learning}
+    Reinforcement learning deals with learning what actions to take in an environment to maximize some notion of reward. The learner is not explicitly told what actions to
+    take, and determines the quality of actions by trying them out to measure their reward.
+
+    The learner is provided with a set of states $S$, a set of actions $A$ to transition between these states, and a set of reinforcement signals $R$. For some constant
+    $0 < \gamma < 1$, the goal of the learner is to choose actions such that $r_0 + \gamma r_1 + \gamma^2 r_2 + \dots$ is maximized. The $\gamma$ term is known as the
+    discount rate, and represents how an award becomes devalued as time progresses.
+
+    \subsection{Markov Decision Processes}
+      Markov chains are used to model a sequence of states where the probability of the next state only depends on the current state (i.e. the next state depends on where
+      you are, but not how you got there). Let $p_{ij}$ be the probability of a transition to state $s_j$ from state $s_i$. Let $U(s_i)$ be the expected discounted sum of
+      future rewards starting at $s_i$.
+
+      $$U(s_i) = \gamma(p_{i1}U(s_1) + p_{i2}U(s_2) + \dots + p_{in}U(s_n))$$
+
+      For a probability matrix $P$ and a reward vector $R$, this has a closed form solution of $U = (I - \gamma P)^{-1}R$.
+
+      While the above formula has a closed-form solution, it involves solving an $n$ by $n$ series of equations, which can be very computationally expensive for large values
+      of $n$. As an alternative, a value iteration method can be used. For this technique, let $U^k(s_i)$ be the expected discounted sum of awards over the next $k$ time steps.
+
+      $$U^{k+1}(s_i) = r_i + \gamma(p_{i1}U^k(s_1) + p_{i2}U^k(s_2) + \dots + p_{in}U^k(s_n))$$
+
+      In the iterative method, the above calculation is repeated until $|U^{k+1}(s) - U^k(s)|$ falls below some margin $\epsilon$. While the solution is an approximation, it
+      tends to be much faster than the closed form solution for large values of $n$.
+
+    \subsection{Passive Learning}
+      In passive reinforcement learning, an agent is provided with a fixed decision policy to apply. The actions to take can be found using the Markov decision process techniques
+      described above.
+
+    \subsection{Active Learning}
+      In an active learning approach, an agent needs to explore its environment to determine the decision policy to apply. The agent records the rewards of actions in a Q-table,
+      which it can reference later to determine which move is the best.
+
 \end{document}
