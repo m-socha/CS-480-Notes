@@ -1276,4 +1276,54 @@
       learning, we are provided with expert actions, and use them to try to determine the reward function. After learning the reward function, a regular
       reinforcement learning algorithm can be applied to find a good policy.
 
+  \section{Bias and Interpretability}
+
+    \subsection{Bias}
+      Statistical bias can be introduced in many phases of the machine learning process. Bias-susceptible phases include:
+      \begin{itemize}
+        \item \textbf{Measurement}
+          Measurement bias can include:
+          \begin{itemize}
+            \item Ill-defined or vague variables (e.g. what does ``good'' mean?)
+            \item Use of proxies to estimate other variables.
+            \item Selection bias of dataset.
+          \end{itemize}
+        \item \textbf{Learning}
+          Learning algorithms typically use all provided information, and may use some information to form conclusions we would like to avoid.
+          Removing variables we do not wish to consider may not solve the problem, since other variables may be correlated with these. It should also
+          be kept in mind that good generic performance metrics (e.g. 5\% error rate) do not preclude a small subset of data from performing extremely
+          poorly.
+        \item \textbf{Actions and Feedback}
+          Many models are unable to intuitively explain why they reached a certain decisions. Also, it is important to remember that statistical correlation
+          is not the same thing as causation.
+
+          Also, predictions can affect outcomes, which can invalidate the prediction or lead to self-fulfilling prophecies. For example, if a system predicts that
+          some road will become congested, cars may avoid that road in favor of some other one, and then that other road will become congested.
+      \end{itemize}
+
+    \subsection{Interpretability Methods}
+      Interpretability in machine learning is a measure of how well a human can understand the cause of decisions reached by machine learning.
+
+      Situations in which interpretability is not needed include ones where users do not care how a decision is made, there are no serious consequences to
+      bad decisions, or where exposing decision criteria can lead to security issues. Interpretability is useful for debugging the performance of poorly
+      performing systems, or for analyzing systems where bad decisions lead to serious consequences.
+
+      Ways to make a model interpretable include:
+      \begin{itemize}
+        \item Showing feature summary statistics.
+        \item Showing model internals (e.g. learned weights in a neural network).
+        \item Showing examples. This can be done using counterfactuals, which are similar points for which the model yields a different prediction.
+        \item Approximating the model using a simpler model (known as surrogate models).
+      \end{itemize}
+
+      In general, interpretability methods can be model-specific or model-agnostic, and can provide local or global explanations for a decision.
+
+      A good explanation should have the following properties:
+      \begin{itemize}
+        \item \textbf{Contrastive:} Explanation should focus on why a decision was reached over other decisions.
+        \item \textbf{Selective:} Explanations should be short, and only show the main causes of a decision.
+        \item \textbf{User-centered:} The target audience should be able to understand the decisions.
+        \item \textbf{Focus on the abnormal:} Explanations are more likely to be useful if a ``strange'' decision was reached.
+      \end{itemize}
+
 \end{document}
